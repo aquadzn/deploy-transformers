@@ -59,12 +59,12 @@ the Virgin Mary, prompting him to become a priest. Rasputin quickly becomes famo
 with people, even a bishop, begging for his blessing. <eod> </s> <eos>"""
 
 
-def list_model():
+def list_models():
     print("Model type:\n\t" + " | ".join(MODEL_CLASSES.keys()))
     print("Model name:\n\t" + " | ".join(ALL_MODELS))
 
 
-class Deploy:
+class Model:
 
     def __init__(self, model_type, model_name, seed=42, verbose=True):
 
@@ -217,3 +217,15 @@ class Deploy:
             if prompt:
                 break
         return text
+
+
+class Deploy:
+
+    def __init__(self):
+        pass
+
+    def create_website(self):
+        pass
+
+    def deploy(self):
+        pass
