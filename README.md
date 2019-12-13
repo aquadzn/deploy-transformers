@@ -6,7 +6,17 @@ Easily deploy Hugging Face's Transformers on a website
 
 * `pytorch`
 * `transformers`
-* `halo`
+
+### Usage:
+
+```python
+from transformersDeploy.deploy import Deploy, list_model
+# If you want to know model types and names: list_model()
+
+
+model = Deploy(model_type="gpt2", model_name="distilgpt2", verbose=True)
+model.generate(prompt="") # If no prompt, input will be ask until exit
+```
 
 
 ### Notes:

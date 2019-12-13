@@ -22,7 +22,6 @@ import argparse
 import logging
 from tqdm import trange
 
-
 import torch
 import torch.nn.functional as F
 import numpy as np
@@ -35,11 +34,6 @@ from transformers import XLNetLMHeadModel, XLNetTokenizer
 from transformers import TransfoXLLMHeadModel, TransfoXLTokenizer
 from transformers import CTRLLMHeadModel, CTRLTokenizer
 
-
-logging.basicConfig(format = '%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
-                    datefmt = '%m/%d/%Y %H:%M:%S',
-                    level = logging.INFO)
-logger = logging.getLogger(__name__)
 
 MAX_LENGTH = int(10000)  # Hardcoded max length to avoid infinite loop
 ALL_MODELS = sum((tuple(conf.pretrained_config_archive_map.keys()) for conf in (OpenAIGPTConfig, GPT2Config, XLNetConfig, TransfoXLConfig, CTRLConfig)), ())
@@ -72,7 +66,14 @@ def list_model():
 
 class Deploy:
 
-    def __init__(self, model_type, model_name, seed=42):
+    def __init__(self, model_type, model_name, seed=42, verbose=True):
+
+        self.verbose = verbose
+        if self.verbose:
+            logging.basicConfig(format = '%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
+                                datefmt = '%m/%d/%Y %H:%M:%S',
+                                level = logging.INFO)
+            self.logger = logging.getLogger(__name__)
 
         self.model_type = model_type.lower()
         self.model_name = model_name
@@ -178,10 +179,10 @@ class Deploy:
         elif length < 0:
             length = MAX_LENGTH  # avoid infinite loop
 
-        logger.info()
-        if self.model_type in ["ctrl"]:
-            if temperature > 0.7:
-                logger.info('CTRL typically works better with lower temperatures (and lower top_k).')
+        if self.verbose:
+            if self.model_type in ["ctrl"]:
+                if temperature > 0.7:
+                    logger.info('CTRL typically works better with lower temperatures (and lower top_k).')
 
         while True:
 
@@ -191,11 +192,12 @@ class Deploy:
                 raw_text = (padding_text if padding_text else PADDING_TEXT) + raw_text
             context_tokens = self.tokenizer.encode(raw_text, add_special_tokens=False)
 
-            if self.model_type == "ctrl":
-                if not any(context_tokens[0] == x for x in self.tokenizer.control_codes.values()):
-                    logger.info("WARNING! You are not starting your generation from a control code so you won't get good results")
+            if self.verbose:
+                if self.model_type == "ctrl":
+                    if not any(context_tokens[0] == x for x in self.tokenizer.control_codes.values()):
+                        logger.info("WARNING! You are not starting your generation from a control code so you won't get good results")
 
-            out = sample_sequence(
+            out = self.sample_sequence(
                 length=length,
                 context=context_tokens,
                 num_samples=num_samples,
@@ -210,80 +212,8 @@ class Deploy:
             for o in out:
                 text = self.tokenizer.decode(o, clean_up_tokenization_spaces=True)
                 text = text[: text.find(stop_token) if stop_token else None]
-                # print(text)
+                print(text)
 
             if prompt:
                 break
         return text
-
-
-    # args.device = torch.device("cuda" if torch.cuda.is_available() and not args.no_cuda else "cpu")
-    # args.n_gpu = torch.cuda.device_count()
-
-    # set_seed(args)
-
-    # args.model_type = args.model_type.lower()
-    # model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
-    # tokenizer = tokenizer_class.from_pretrained(args.model_name_or_path)
-    # model = model_class.from_pretrained(args.model_name_or_path)
-    # model.to(args.device)
-    # model.eval()
-
-    # if args.length < 0 and model.config.max_position_embeddings > 0:
-    #     args.length = model.config.max_position_embeddings
-    # elif 0 < model.config.max_position_embeddings < args.length:
-    #     args.length = model.config.max_position_embeddings  # No generation bigger than model size 
-    # elif args.length < 0:
-    #     args.length = MAX_LENGTH  # avoid infinite loop
-
-
-    # while True:
-    #     xlm_lang = None
-    #     # XLM Language usage detailed in the issues #1414
-    #     if args.model_type in ["xlm"] and hasattr(tokenizer, 'lang2id') and hasattr(model.config, 'use_lang_emb') \
-    #             and model.config.use_lang_emb:
-    #         if args.xlm_lang:
-    #             language = args.xlm_lang
-    #         else:
-    #             language = None
-    #             while language not in tokenizer.lang2id.keys():
-    #                 language = input("Using XLM. Select language in " + str(list(tokenizer.lang2id.keys())) + " >>> ")
-    #         xlm_lang = tokenizer.lang2id[language]
-
-    #     # XLM masked-language modeling (MLM) models need masked token (see details in sample_sequence)
-    #     is_xlm_mlm = args.model_type in ["xlm"] and 'mlm' in args.model_name_or_path
-    #     if is_xlm_mlm:
-    #         xlm_mask_token = tokenizer.mask_token_id
-    #     else:
-    #         xlm_mask_token = None
-
-    #     raw_text = args.prompt if args.prompt else input("Model prompt >>> ")
-    #     if args.model_type in ["transfo-xl", "xlnet"]:
-    #         # Models with memory likes to have a long prompt for short inputs.
-    #         raw_text = (args.padding_text if args.padding_text else PADDING_TEXT) + raw_text
-    #     context_tokens = tokenizer.encode(raw_text, add_special_tokens=False)
-    #     out = sample_sequence(
-    #         model=model,
-    #         context=context_tokens,
-    #         num_samples=args.num_samples,
-    #         length=args.length,
-    #         temperature=args.temperature,
-    #         top_k=args.top_k,
-    #         top_p=args.top_p,
-    #         repetition_penalty=args.repetition_penalty,
-    #         is_xlnet=bool(args.model_type == "xlnet"),
-    #         is_xlm_mlm=is_xlm_mlm,
-    #         xlm_mask_token=xlm_mask_token,
-    #         xlm_lang=xlm_lang,
-    #         device=args.device,
-    #     )
-    #     out = out[:, len(context_tokens):].tolist()
-    #     for o in out:
-    #         text = tokenizer.decode(o, clean_up_tokenization_spaces=True)
-    #         text = text[: text.find(args.stop_token) if args.stop_token else None]
-
-    #         print(text)
-
-    #     if args.prompt:
-    #         break
-    # return text
