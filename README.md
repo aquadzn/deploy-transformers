@@ -1,6 +1,15 @@
-# deploy-transformers
+# Deploy Transformers
 Easily deploy Hugging Face's Transformers on a website
 
+
+### Requirements:
+
+* `pytorch`
+* `transformers`
+* `halo`
+
+
+### Notes:
 
 * Essayez d'obtenir des prédictions de textes générés à partir d'un modèle
     préentraîné
