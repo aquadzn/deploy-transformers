@@ -2,25 +2,40 @@
 Easily deploy Hugging Face's Transformers on a website
 
 
-### Requirements:
+### Requirements
+---
 
 * `pytorch`
 * `transformers`
-* ``FastAPI` or `Flask`
+* `uvicorn` `starlette` `jinja2` `aiofiles`
 
-### Usage:
 
+### Usage
+---
+
+**Text generation**
 ```python
-from transformersDeploy.deploy import list_models, Model, Deploy
-# If you want to know model types and names: list_model()
+from transformersDeploy.deploy import Model, ListModels, Website
+
+# ListModels() shows available models
+
+model = Model("gpt2", "distilgpt2", seed=42, verbose=False)
+model.generate(length=20, prompt="The quick brown fox jumps over the lazy dog")
+# If no prompt, input will be ask until exit
+```
+
+**Deploy app**
+```python
+from transformersDeploy.deploy import Model, ListModels, Website
 
 
-model = Model(model_type="gpt2", model_name="distilgpt2", verbose=True)
-model.generate(prompt="") # If no prompt, input will be ask until exit
+website = Website(model_type="gpt2", model_name="distilgpt2")
+website.deploy(homepage_file="index.html")
 ```
 
 
-### Notes:
+### Notes
+---
 
 * Essayez d'obtenir des prédictions de textes générés à partir d'un modèle
     préentraîné
