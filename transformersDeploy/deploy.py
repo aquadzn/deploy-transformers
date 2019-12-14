@@ -25,6 +25,7 @@ from tqdm import trange
 import torch
 import torch.nn.functional as F
 import numpy as np
+from flask import Flask, render_template
 
 # Removed XLM
 from transformers import GPT2Config, OpenAIGPTConfig, XLNetConfig, TransfoXLConfig, CTRLConfig
@@ -227,5 +228,12 @@ class Deploy:
     def create_website(self):
         pass
 
-    def deploy(self):
-        pass
+    def deploy_app(self, app_name, title, host='0.0.0.0', port=8080):
+
+        app = Flask(app_name)
+
+        @app.route("/")
+        def hello():
+            return render_template("index.html", title=title)
+        
+        app.run(host=host, port=port)
