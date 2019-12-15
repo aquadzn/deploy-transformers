@@ -1,41 +1,43 @@
-# Deploy Transformers
-Easily deploy Hugging Face's Transformers on a website
+# 🚀 Deploy Transformers
+> Easily deploy HuggingFace's 🤗 Transformers on a website
 
 
-### Requirements
----
-
-* `pytorch`
-* `transformers`
-* `uvicorn` `starlette` `jinja2` `aiofiles`
+One to two paragraph statement about your product and what it does.
 
 
-### Usage
----
+## Installation
 
-**Text generation**
-```python
-from transformersDeploy.deploy import Model, ListModels, Website
+**Pytorch** and **Transformers** are obviously needed.
 
-# ListModels() shows available models
-
-model = Model("gpt2", "distilgpt2", seed=42, verbose=False)
-model.generate(length=20, prompt="The quick brown fox jumps over the lazy dog")
-# If no prompt, input will be ask until exit
+```bash
+pip install transformersDeploy
 ```
 
-**Deploy app**
-```python
-from transformersDeploy.deploy import Model, ListModels, Website
-
-
-website = Website(model_type="gpt2", model_name="distilgpt2")
-website.deploy(homepage_file="index.html")
+**For deployment, file structure needs to be like this:**
+```bash
+├── static
+│   ├── script.js
+│   ├── style.css
+├── templates
+│   ├── 404.html
+│   ├── index.html
+|
+└── your_file.py
 ```
 
+You can either **clone** this repository to have original files or **create yourself** the structure or use the function `website.create_structure()`.
 
-### Notes
----
+This will automatically create *templates/*, *static/* and all the files that are in it if none of them exist.
+
+
+## Usage
+
+![Generation snippets](https://svgshare.com/i/Gne.svg)![Deployment snippets](https://svgshare.com/i/GnN.svg)
+
+**You can change homepage filename, templates/ and static/ names in `website.deploy()` but it's better to keep them as default.**
+
+
+## Notes
 
 * Essayez d'obtenir des prédictions de textes générés à partir d'un modèle
     préentraîné
