@@ -1,64 +1,117 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ title }}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
-    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-</head>
-<body>
-    <section class="hero is-fullwidth">
-    <div class="hero-head">
-        <nav class="navbar">
-        <div class="container">
-            <div class="navbar-brand">
-            <a class="navbar-item">
-                <a class="navbar-item">
-                {{ title }}
-                </a>
-            </a>
-            <span class="navbar-burger burger" data-target="navbarMenuHeroB">
-                <span></span>
-                <span></span>
-                <span></span>
-            </span>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Deploy Transformers</title>
+        <link rel="shortcut icon" href="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/google/223/hugging-face_1f917.png">
+        <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-extensions@4.0.0/dist/css/bulma-extensions.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Merriweather|Montserrat:700|Roboto+Condensed&display=swap" rel="stylesheet">
+        <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    </head>
+    <body>
+        <section class="hero is-fullwidth">
+            <div class="hero-head">
+                <nav class="navbar">
+                    <div class="container">
+                        <div class="navbar-brand">
+                            <a href="./" class="navbar-item">
+                            🚀 Deploy Transformers 🤗
+                            </a>
+                        </div>
+                        <div class="navbar-menu is-active">
+                            <div class="navbar-end">
+                                <span class="navbar-item">
+                                <a href="https://github.com/aquadzn/deploy-transformers" target="_blank" class="button is-info is-inverted">
+                                <span class="icon">
+                                <i class="fab fa-github"></i>
+                                </span>
+                                <span>View on GitHub</span>
+                                </a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
             </div>
-            <div id="navbarMenuHeroB" class="navbar-menu">
-            <div class="navbar-end">
-                <a class="navbar-item is-active">
-                Home
-                </a>
-                <a class="navbar-item">
-                Examples
-                </a>
-                <a class="navbar-item">
-                Documentation
-                </a>
-                <span class="navbar-item">
-                <a class="button is-info is-inverted">
-                    <span class="icon">
-                    <i class="fab fa-github"></i>
-                    </span>
-                    <span>Download</span>
-                </a>
-                </span>
+        </section>
+        <section id="main" class="section">
+            <form id="gen-form">
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                        <label class="label">Length</label>
+                    </div>
+                    <div class="field-body">
+                        <div class="field">
+                            <p class="control is-expanded has-icons-left">
+                                <input id="length" class="input" type="text" placeholder="20" required>
+                                <span class="icon is-small is-left">
+                                <i class="fas fa-text-width"></i>
+                                </span>
+                            <p class="help">Choose the length of the generated text.</p>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                        <label class="label">Temperature</label>
+                    </div>
+                    <div class="field-body">
+                        <div class="field">
+                            <p class="control is-expanded has-icons-left">
+                                <input id="temperature" class="slider is-info has-output" min="0.0" max="3.0" value="1.0" step="0.1" type="range">
+                                <output for="temperature">1.0</output>
+                            <p class="help">Temperature controls the creativity of the generated text. It is usually between 0.7 and 1.0</p>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                        <label class="label">Prompt</label>
+                    </div>
+                    <div class="field-body">
+                        <div class="field">
+                            <div class="control">
+                                <textarea id="prompt" class="textarea" type="text" rows="2" placeholder="The quick brown fox jumps over the lazy dog" required></textarea>
+                            </div>
+                            <p class="help">Choose the input text on which the generated text will be based.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="field is-horizontal">
+                    <div class="field-label">
+                    </div>
+                    <div class="field-body">
+                        <div class="field">
+                            <div class="control">
+                                <button type="submit" name="submit" id="generate-text" class="button is-info is-fullwidth">
+                                <span class="icon">
+                                <i class="fas fa-pen"></i>
+                                </span>
+                                <span>
+                                Generate
+                                </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="is-divider"></div>
+            <div id="model-output" class="has-text-centered">
+            <div id="tutorial">
+                <p class="subtitle">
+                    Your generated text will appear just below
+                </p>
+                <i class="far fa-hand-point-down"></i>
             </div>
-            </div>
-        </div>
-        </nav>
-    </div>
-
-    <div class="hero-body">
-        <div class="container has-text-centered">
-        <p class="title">
-            Title
-        </p>
-        <p class="subtitle">
-            Subtitle
-        </p>
-        </div>
-    </div>
-    </section>
-</body>
+        </section>
+    </body>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="{{ url_for('static', path='/script.js') }}"></script>
 </html>

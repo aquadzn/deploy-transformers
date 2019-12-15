@@ -65,128 +65,121 @@ def HTML_FILE():
     '''
     return """
 <!DOCTYPE html>
-  
-<html lang="fr">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AI Text generation</title>
-  <meta name="title" content="Démo de GPT-2 en français.">
-  <meta name="description" content="Génération de textes en français.">
-  <meta property="og:image" content="https://raw.githubusercontent.com/aquadzn/gpt2-french/master/src/gpt2.png">
-  <meta property="og:image:type" content="image/png">
-  <link rel="shortcut icon" href="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/google/223/hugging-face_1f917.png">
-  <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
-  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-</head>
-<body>
-
-  <section class="hero is-primary is-bold">
-    <div class="hero-body">
-      <div class="container has-text-centered is-centered">
-        <h1 class="title is-1">{{ h1 }}</h1>
-        <h2 class="subtitle is-4">Génération de textes en français</h2>
-        <a class="button is-medium is-rounded" href="https://github.com/aquadzn/gpt2-french/" target="_blank">
-          <span class="icon"><i class="fab fa-github"></i></span>
-          <span>GitHub</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <section id="main" class="section">
-    <div class="container">
-      <div class="columns is-variable is-5">
-        <div class="column is-narrow" style="width: 50%;">
-
-          <form id="gen-form">
-
-            <div class="field">
-              <label class="label">Réplique</label>
-              <div class="control">
-                <textarea id="prompt" class="textarea" type="text" rows="2"></textarea>
-              </div>
-              <p class="help">Réplique avec laquelle débutera le texte généré. <em>(Optionnel, max: 500 caractères)</em></p>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Deploy Transformers</title>
+        <link rel="shortcut icon" href="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/google/223/hugging-face_1f917.png">
+        <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-extensions@4.0.0/dist/css/bulma-extensions.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Merriweather|Montserrat:700|Roboto+Condensed&display=swap" rel="stylesheet">
+        <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    </head>
+    <body>
+        <section class="hero is-fullwidth">
+            <div class="hero-head">
+                <nav class="navbar">
+                    <div class="container">
+                        <div class="navbar-brand">
+                            <a href="./" class="navbar-item">
+                            🚀 Deploy Transformers 🤗
+                            </a>
+                        </div>
+                        <div class="navbar-menu is-active">
+                            <div class="navbar-end">
+                                <span class="navbar-item">
+                                <a href="https://github.com/aquadzn/deploy-transformers" target="_blank" class="button is-info is-inverted">
+                                <span class="icon">
+                                <i class="fab fa-github"></i>
+                                </span>
+                                <span>View on GitHub</span>
+                                </a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
             </div>
-
-            <div class="field">
-              <label class="label">Longueur du texte généré</label>
-              <div class="control">
-                <input id="length" class="input" type="text" placeholder="Nombre de mots" value="20">
-              </div>
-              <p class="help">Nombre de mots (tokens) à générer. Environ 20 secondes pour 100 mots.<em>(max: 1023)</em></p>
+        </section>
+        <section id="main" class="section">
+            <form id="gen-form">
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                        <label class="label">Length</label>
+                    </div>
+                    <div class="field-body">
+                        <div class="field">
+                            <p class="control is-expanded has-icons-left">
+                                <input id="length" class="input" type="text" placeholder="20" required>
+                                <span class="icon is-small is-left">
+                                <i class="fas fa-text-width"></i>
+                                </span>
+                            <p class="help">Choose the length of the generated text.</p>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                        <label class="label">Temperature</label>
+                    </div>
+                    <div class="field-body">
+                        <div class="field">
+                            <p class="control is-expanded has-icons-left">
+                                <input id="temperature" class="slider is-info has-output" min="0.0" max="3.0" value="1.0" step="0.1" type="range">
+                                <output for="temperature">1.0</output>
+                            <p class="help">Temperature controls the creativity of the generated text. It is usually between 0.7 and 1.0</p>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                        <label class="label">Prompt</label>
+                    </div>
+                    <div class="field-body">
+                        <div class="field">
+                            <div class="control">
+                                <textarea id="prompt" class="textarea" type="text" rows="2" placeholder="The quick brown fox jumps over the lazy dog" required></textarea>
+                            </div>
+                            <p class="help">Choose the input text on which the generated text will be based.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="field is-horizontal">
+                    <div class="field-label">
+                    </div>
+                    <div class="field-body">
+                        <div class="field">
+                            <div class="control">
+                                <button type="submit" name="submit" id="generate-text" class="button is-info is-fullwidth">
+                                <span class="icon">
+                                <i class="fas fa-pen"></i>
+                                </span>
+                                <span>
+                                Generate
+                                </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="is-divider"></div>
+            <div id="model-output" class="has-text-centered">
+            <div id="tutorial">
+                <p class="subtitle">
+                    Your generated text will appear just below
+                </p>
+                <i class="far fa-hand-point-down"></i>
             </div>
-
-            <div class="field">
-              <label class="label">Température</label>
-              <div class="control">
-                <input id="temperature" class="input" type="text" placeholder="1.0" value="1.0">
-              </div>
-              <p class="help">Ajuste la créativité du texte généré.<em>(Valeur optimale entre 0.7 et 1.0)</em></p>
-            </div>
-
-            <div class="buttons">
-              <span class="control">
-                <button type="submit" name="submit" id="generate-text" class="button is-link is-normal">
-                  <span class="icon">
-                    <i class="fas fa-md fa-pen"></i>
-                  </span>
-                  <span>Générer un texte</span>
-                </button>
-              </span>
-            </div>
-          
-          </form>
-
-          <div class="buttons">
-            <span class="control">
-              <button id="save-image" class="button is-light is-normal">
-                <span class="icon">
-                  <i class="fas fa-md fa-save"></i>
-                </span>
-                <span>Sauvegarder le texte</span>
-              </button>
-            </span>
-
-            <span class="control">
-              <button id="clear-text" class="button is-danger is-normal">
-                <span class="icon">
-                  <i class="fas fa-md fa-trash-alt"></i>
-                </span>
-                <span>Nettoyer l'affichage</span>
-              </button>
-            </span>
-          </div>
-          
-        </div>
-        
-        <div id="model-output"         self.port = port
-        class="column">
-          <p id="tutorial" class="subtitle is-size-6-mobile"><em>Votre texte généré apparaîtra ici après avoir appuyé sur le bouton <strong>Générez un texte</strong></em></p>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <div class="content has-text-centered">
-      <p>
-        Site réalisé avec Bulma par <a href="https://github.com/aquadzn/">William Jacques</a>.<br>
-        <br>Implémentations <a href="https://github.com/minimaxir/gpt-2-simple" target="_blank"><strong>gpt-2-simple</strong></a>
-        et <a href="https://github.com/minimaxir/gpt-2-cloud-run" target="_blank"><strong>gpt-2-cloud-run</strong></a> de
-        <a href="https://minimaxir.com" target="_blank">Max Woolf</a>. Modèle GPT-2 original par <a href="https://openai.com" target="_blank">OpenAI</a>.
-        <br>Le contenu de ce site est construit sur la license <a href="https://github.com/aquadzn/gpt2-french/blob/master/LICENSE" target="_blank">MIT</a>.
-      </p>
-    </div>
-  </footer>
-
-</body>
-
-<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-<script src="{{ url_for('static', path='/script.js') }}"></script>
+        </section>
+    </body>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="{{ url_for('static', path='/script.js') }}"></script>
 </html>
 """
 
@@ -236,21 +229,25 @@ def CSS_FILE():
     Hardcoded CSS file
     '''
     return """
-body {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    background-color: #fff;
-  }
-  
-footer {
-    padding: 1em !important
+button span {
+    font-family: 'Montserrat', sans-serif;
 }
-
-section {
-    min-height: 95%;
+button:hover {
+    box-shadow: 0px 1px 5px 0px #0000003a;    
+    transition: all 0.3s ease 0s;
 }
-
+a:hover {
+    transition: all 0.5s ease 0s !important;
+}
+#main {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+.hero-head {
+    font-family: 'Montserrat', sans-serif;
+}
+.help {
+    font-family: 'Merriweather', serif;
+}
 .gen-box {
     display: block;
     padding: 1.25rem;
@@ -259,16 +256,13 @@ section {
     line-height: 1.25;
     border-bottom: 0.5px solid rgb(228, 228, 228);
 }
-
+.gen-box:hover {
+    background-color: #ecf0f1;
+    transition: all 0.5s ease 0s;
+}
 .gen-box.warning {
     color: #e74c3c;
     font-weight: 700;
-}
-
-.buttons {
-    padding-top: 1em;
-    margin-top: 1em;
-    border-top: 0.5px solid rgb(228, 228, 228);
 }
 """
 
@@ -277,6 +271,78 @@ def JS_FILE():
     Hardcoded JS file
     '''
     return """
+// Find output DOM associated to the DOM element passed as parameter
+function findOutputForSlider( element ) {
+    var idVal = element.id;
+    outputs = document.getElementsByTagName( 'output' );
+    for( var i = 0; i < outputs.length; i++ ) {
+      if ( outputs[ i ].htmlFor == idVal )
+        return outputs[ i ];
+    }
+ }
+ 
+ function getSliderOutputPosition( slider ) {
+   // Update output position
+   var newPlace,
+       minValue;
+ 
+   var style = window.getComputedStyle( slider, null );
+   // Measure width of range input
+   sliderWidth = parseInt( style.getPropertyValue( 'width' ), 10 );
+ 
+   // Figure out placement percentage between left and right of input
+   if ( !slider.getAttribute( 'min' ) ) {
+     minValue = 0;
+   } else {
+     minValue = slider.getAttribute( 'min' );
+   }
+   var newPoint = ( slider.value - minValue ) / ( slider.getAttribute( 'max' ) - minValue );
+ 
+   // Prevent bubble from going beyond left or right (unsupported browsers)
+   if ( newPoint < 0 ) {
+     newPlace = 0;
+   } else if ( newPoint > 1 ) {
+     newPlace = sliderWidth;
+   } else {
+     newPlace = sliderWidth * newPoint;
+   }
+ 
+   return {
+     'position': newPlace + 'px'
+   }
+ }
+ 
+ document.addEventListener( 'DOMContentLoaded', function () {
+   // Get all document sliders
+   var sliders = document.querySelectorAll( 'input[type="range"].slider' );
+   [].forEach.call( sliders, function ( slider ) {
+     var output = findOutputForSlider( slider );
+     if ( output ) {
+       if ( slider.classList.contains( 'has-output-tooltip' ) ) {
+         // Get new output position
+         var newPosition = getSliderOutputPosition( slider );
+ 
+         // Set output position
+         output.style[ 'left' ] = newPosition.position;
+       }
+ 
+       // Add event listener to update output when slider value change
+       slider.addEventListener( 'input', function( event ) {
+         if ( event.target.classList.contains( 'has-output-tooltip' ) ) {
+           // Get new output position
+           var newPosition = getSliderOutputPosition( event.target );
+ 
+           // Set output position
+           output.style[ 'left' ] = newPosition.position;
+         }
+ 
+         // Update output with slider value
+         output.value = event.target.value;
+       } );
+     }
+   } );
+ } );
+
 $(function() {
     $('#gen-form').submit(function(e) {
         e.preventDefault();
@@ -307,22 +373,13 @@ $(function() {
                 $('#generate-text').removeClass("is-loading");
                 $('#generate-text').prop("disabled", false);
                 $('#tutorial').remove();
-                var html = '<div class="gen-box warning">Il y a eu une erreur pendant la génération du texte. Veuillez réessayer!</div>';
+                var html = '<div class="gen-box warning">Attention, an error has occurred! Please try again.</div>';
                 $(html).appendTo('#model-output').hide().fadeIn("slow");
             }
         });
     });
     $('#clear-text').click(function(e) {
         $('#model-output').text('')
-    });
-
-    // https://stackoverflow.com/a/51478809
-    $("#save-image").click(function() {
-
-        html2canvas(document.querySelector('#model-output')).then(function(canvas) {
-
-            saveAs(canvas.toDataURL(), 'gen_texts.png');
-        });
     });
 
 });
@@ -333,32 +390,6 @@ function getInputValues() {
         inputs[$(this).attr('id')] = $(this).val();
     });
     return inputs;
-}
-
-// https://stackoverflow.com/a/51478809
-function saveAs(uri, filename) {
-
-    var link = document.createElement('a');
-
-    if (typeof link.download === 'string') {
-
-        link.href = uri;
-        link.download = filename;
-
-        //Firefox requires the link to be in the body
-        document.body.appendChild(link);
-
-        //simulate click
-        link.click();
-
-        //remove the link when done
-        document.body.removeChild(link);
-
-    } else {
-
-        window.open(uri);
-
-    }
 }
 """
 
@@ -727,8 +758,6 @@ class Website:
             TemplateResponse()
                 The homepage
             '''
-            # template = "index2.html"
-            # context = {"request": request}
             return templates.TemplateResponse(homepage_file, {"request": request})
 
         @app.route('/predict', methods=['GET', 'POST', 'HEAD'])

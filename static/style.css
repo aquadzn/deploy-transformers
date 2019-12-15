@@ -1,18 +1,22 @@
-body {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    background-color: #fff;
-  }
-  
-footer {
-    padding: 1em !important
+button span {
+    font-family: 'Montserrat', sans-serif;
 }
-
-section {
-    min-height: 95%;
+button:hover {
+    box-shadow: 0px 1px 5px 0px #0000003a;    
+    transition: all 0.3s ease 0s;
 }
-
+a:hover {
+    transition: all 0.5s ease 0s !important;
+}
+#main {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+.hero-head {
+    font-family: 'Montserrat', sans-serif;
+}
+.help {
+    font-family: 'Merriweather', serif;
+}
 .gen-box {
     display: block;
     padding: 1.25rem;
@@ -21,14 +25,11 @@ section {
     line-height: 1.25;
     border-bottom: 0.5px solid rgb(228, 228, 228);
 }
-
+.gen-box:hover {
+    background-color: #ecf0f1;
+    transition: all 0.5s ease 0s;
+}
 .gen-box.warning {
     color: #e74c3c;
     font-weight: 700;
-}
-
-.buttons {
-    padding-top: 1em;
-    margin-top: 1em;
-    border-top: 0.5px solid rgb(228, 228, 228);
 }

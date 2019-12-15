@@ -1,3 +1,75 @@
+// Find output DOM associated to the DOM element passed as parameter
+function findOutputForSlider( element ) {
+    var idVal = element.id;
+    outputs = document.getElementsByTagName( 'output' );
+    for( var i = 0; i < outputs.length; i++ ) {
+      if ( outputs[ i ].htmlFor == idVal )
+        return outputs[ i ];
+    }
+ }
+ 
+ function getSliderOutputPosition( slider ) {
+   // Update output position
+   var newPlace,
+       minValue;
+ 
+   var style = window.getComputedStyle( slider, null );
+   // Measure width of range input
+   sliderWidth = parseInt( style.getPropertyValue( 'width' ), 10 );
+ 
+   // Figure out placement percentage between left and right of input
+   if ( !slider.getAttribute( 'min' ) ) {
+     minValue = 0;
+   } else {
+     minValue = slider.getAttribute( 'min' );
+   }
+   var newPoint = ( slider.value - minValue ) / ( slider.getAttribute( 'max' ) - minValue );
+ 
+   // Prevent bubble from going beyond left or right (unsupported browsers)
+   if ( newPoint < 0 ) {
+     newPlace = 0;
+   } else if ( newPoint > 1 ) {
+     newPlace = sliderWidth;
+   } else {
+     newPlace = sliderWidth * newPoint;
+   }
+ 
+   return {
+     'position': newPlace + 'px'
+   }
+ }
+ 
+ document.addEventListener( 'DOMContentLoaded', function () {
+   // Get all document sliders
+   var sliders = document.querySelectorAll( 'input[type="range"].slider' );
+   [].forEach.call( sliders, function ( slider ) {
+     var output = findOutputForSlider( slider );
+     if ( output ) {
+       if ( slider.classList.contains( 'has-output-tooltip' ) ) {
+         // Get new output position
+         var newPosition = getSliderOutputPosition( slider );
+ 
+         // Set output position
+         output.style[ 'left' ] = newPosition.position;
+       }
+ 
+       // Add event listener to update output when slider value change
+       slider.addEventListener( 'input', function( event ) {
+         if ( event.target.classList.contains( 'has-output-tooltip' ) ) {
+           // Get new output position
+           var newPosition = getSliderOutputPosition( event.target );
+ 
+           // Set output position
+           output.style[ 'left' ] = newPosition.position;
+         }
+ 
+         // Update output with slider value
+         output.value = event.target.value;
+       } );
+     }
+   } );
+ } );
+
 $(function() {
     $('#gen-form').submit(function(e) {
         e.preventDefault();
@@ -28,22 +100,13 @@ $(function() {
                 $('#generate-text').removeClass("is-loading");
                 $('#generate-text').prop("disabled", false);
                 $('#tutorial').remove();
-                var html = '<div class="gen-box warning">Il y a eu une erreur pendant la génération du texte. Veuillez réessayer!</div>';
+                var html = '<div class="gen-box warning">Attention, an error has occurred! Please try again.</div>';
                 $(html).appendTo('#model-output').hide().fadeIn("slow");
             }
         });
     });
     $('#clear-text').click(function(e) {
         $('#model-output').text('')
-    });
-
-    // https://stackoverflow.com/a/51478809
-    $("#save-image").click(function() {
-
-        html2canvas(document.querySelector('#model-output')).then(function(canvas) {
-
-            saveAs(canvas.toDataURL(), 'gen_texts.png');
-        });
     });
 
 });
@@ -54,30 +117,4 @@ function getInputValues() {
         inputs[$(this).attr('id')] = $(this).val();
     });
     return inputs;
-}
-
-// https://stackoverflow.com/a/51478809
-function saveAs(uri, filename) {
-
-    var link = document.createElement('a');
-
-    if (typeof link.download === 'string') {
-
-        link.href = uri;
-        link.download = filename;
-
-        //Firefox requires the link to be in the body
-        document.body.appendChild(link);
-
-        //simulate click
-        link.click();
-
-        //remove the link when done
-        document.body.removeChild(link);
-
-    } else {
-
-        window.open(uri);
-
-    }
 }

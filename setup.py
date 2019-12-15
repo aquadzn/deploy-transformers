@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="transformers-deploy", # Replace with your own username
+    name="deploy-transformers",
     version="0.1",
     author="William Jacques",
     author_email="williamjcqs8@gmail.com",
@@ -18,9 +18,9 @@ setuptools.setup(
         "License :: OSI Approved :: Apache License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',
+    python_requires='>=3.5',
     install_requires=[
-        'transformers',
+        'requests',
         'starlette',
         'uvicorn',
         'jinja2',
