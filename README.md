@@ -31,7 +31,7 @@ You can either **clone** this repository to have original files or use the funct
 
 ## Usage
 
-Check the *[examples/](github.com/aquadzn/deploy-transformers/tree/master/examples)* folder.
+Check the *[examples/](https://github.com/aquadzn/deploy-transformers/tree/master/examples)* folder.
 
 ```python
 # Deployment
@@ -53,6 +53,8 @@ model = Model("gpt2", "distilgpt2", seed=42, verbose=False)
 model.generate(length=20, prompt="The quick brown fox jumps over the lazy dog")
 # If no prompt, input will be ask until exit
 ```
+
+There is also a Dockerfile.
 
 ## Thanks
 
