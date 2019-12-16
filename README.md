@@ -1,11 +1,10 @@
 # 🚀 Deploy Transformers 🤗
 > Deploy a SOTA model for text-generation in just three lines of code 💻
+> 
+![image](https://svgshare.com/i/GnD.svg)
 
 
-![image](https://svgshare.com/i/GoN.svg)
-
-
-## Installation
+## Installation 
 
 [**Pytorch**](https://pytorch.org/get-started/locally/#start-locally) and [**Transformers**](https://github.com/huggingface/transformers/#installation) are obviously needed.
 
@@ -55,7 +54,8 @@ model.generate(length=20, prompt="The quick brown fox jumps over the lazy dog")
 # If no prompt, input will be ask until exit
 ```
 
-## Thanks
+## Thanks
+
 * [Transformers](https://github.com/huggingface/transformers) package by HuggingFace
 * [gpt-2-cloudrun](https://github.com/minimaxir/gpt-2-cloud-run) by minimaxir
 
