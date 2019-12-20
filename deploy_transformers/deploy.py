@@ -409,9 +409,11 @@ class Model:
     model_type : str
         Define the type of model to use
     model_name : str
-        Define the model to use  
+        Define the model to use
     seed : int
-        Define the seed to use [default: 42]  
+        Define the seed to use [default: 42]
+    is_xlnet : bool
+        Set to True if using XLNet model [default: False]
     verbose : bool
         Enable or disable the logger [default: False]
 
@@ -419,6 +421,8 @@ class Model:
     ----------
     verbose : bool
         This is where we store verbose
+    is_xlnet : bool
+        This is where we store is_xlnet
     model_type : str
         This is where we store model_type
     model_name : str
@@ -447,6 +451,7 @@ class Model:
                                 level = logging.INFO)
             self.logger = logging.getLogger(__name__)
 
+        self.is_xlnet = is_xlnet
         self.model_type = model_type.lower()
         self.model_name = model_name
         self.model_class, self.tokenizer_class = MODEL_CLASSES()[self.model_type]
@@ -584,7 +589,7 @@ class Model:
         top_k=0,
         top_p=0.9, 
         repetition_penalty=1.0,
-        is_xlnet=False,
+        is_xlnet=self.is_xlnet,
         stop_token=None):
         '''Generate predicted text
 
@@ -667,7 +672,9 @@ class Website:
     model_type : str
         Define the type of model to use
     model_name : str
-        Define the model to use    
+        Define the model to use
+    is_xlnet : bool
+        Set to True if using XLNet model [default: False]
     verbose : bool
         Enable or disable the logger [default: False]
 
@@ -677,12 +684,15 @@ class Website:
         This is where we store model_type
     model_name : str
         This is where we store model_name
+    is_xlnet : bool
+        This is where we store is_xlnet
     verbose : bool
         This is where we store verbose
     '''
-    def __init__(self, model_type, model_name, verbose=False):
+    def __init__(self, model_type, model_name, is_xlnet=False, verbose=False):
         self.model_type = model_type
         self.model_name = model_name
+        self.is_xlnet = is_xlnet
         self.verbose = verbose
 
     def create_folder(self, homepage_file='index.html', css_file='style.css', template_folder='templates', static_folder='static'):
@@ -786,7 +796,8 @@ class Website:
             text = model.generate(
                 length=int(params.get('length', 20)),
                 prompt=params.get('prompt', ''),
-                temperature=float(params.get('temperature', 1.0))
+                temperature=float(params.get('temperature', 1.0)),
+                is_xlnet=self.is_xlnet
             )
 
             return JSONResponse(
@@ -801,5 +812,5 @@ class Website:
             return templates.TemplateResponse("404.html", {"request": request}, status_code=404)
 
 
-        model = Model(model_type=self.model_type, model_name=self.model_name, verbose=self.verbose)
+        model = Model(model_type=self.model_type, model_name=self.model_name, is_xlnet=self.is_xlnet, verbose=self.verbose)
         uvicorn.run(app, host=host, port=port)
