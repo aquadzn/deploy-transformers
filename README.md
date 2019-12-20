@@ -65,3 +65,5 @@ There is also a Dockerfile.
 
 * Do the same but for other tasks like sentiment analysis, or Q&A.
 * Add Flask option?
+* Tests with https://github.com/pytest-dev/pytest
+* Add AWS, App Engine and CloudRun support
